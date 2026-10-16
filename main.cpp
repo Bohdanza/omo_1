@@ -7,6 +7,7 @@
 using namespace std;
 
 const double EPS = 1e-5;
+const double F_EPS = 1e-6;
 
 double f(double x)
 {
@@ -50,9 +51,9 @@ void iterate(const char *name, double x0, const function<double(double)> &step)
     double x = x0;
     for (int k = 1;; ++k)
     {
-        double xn = step(x);
-        row(k, xn, xn - x, f(xn));
-        if (!isfinite(xn) || fabs(xn - x) < EPS)
+        double xn = step(x), fxn = f(xn);
+        row(k, xn, xn - x, fxn);
+        if (!isfinite(xn) || (fabs(xn - x) < EPS && fabs(fxn) < F_EPS))
             break;
         x = xn;
     }
